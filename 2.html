@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Código da Atração</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* RESET & BASE STYLES */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bg-deep: #050505;
+            --red-main: #C1121F;
+            --red-dusk: #8A1018;
+            --red-glow: #E63946;
+            --white-main: #F5F5F5;
+            --white-sec: #D7D7D7;
+            --card-bg: rgba(14, 14, 14, 0.75);
+            --border-glow: rgba(193, 18, 31, 0.25);
+            --font-heading: 'Anton', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--bg-deep);
+            color: var(--white-main);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* AMBIENT BACKGROUND SYSTEM */
+        .ambient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: radial-gradient(circle at 50% 30%, #150608 0%, var(--bg-deep) 70%);
+            overflow: hidden;
+        }
+
+        .ambient-glow {
+            position: absolute;
+            top: -10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150vw;
+            height: 60vh;
+            background: radial-gradient(circle, rgba(138, 16, 24, 0.15) 0%, transparent 60%);
+            pointer-events: none;
+            animation: pulseGlow 12s ease-in-out infinite alternate;
+        }
+
+        .cinematic-grain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.025;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* MOBILE FIRST CONTAINER CONTAINER */
+        .wrapper {
+            max-width: 450px;
+            margin: 0 auto;
+            padding: 0 24px 100px 24px;
+            position: relative;
+        }
+
+        /* TYPOGRAPHY */
+        h1, h2, h3 {
+            font-family: var(--font-heading);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 400;
+        }
+
+        p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--white-sec);
+            font-weight: 300;
+        }
+
+        /* ANIMATIONS */
+        @keyframes pulseGlow {
+            0% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+            100% { opacity: 1; transform: translateX(-50%) scale(1.15); }
+        }
+
+        @keyframes btnPulse {
+            0% { box-shadow: 0 4px 15px rgba(193, 18, 31, 0.4); }
+            50% { box-shadow: 0 4px 25px rgba(230, 57, 70, 0.7); }
+            100% { box-shadow: 0 4px 15px rgba(193, 18, 31, 0.4); }
+        }
+
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .scroll-reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* HERO SECTION */
+        .hero {
+            padding: 60px 0 40px 0;
+            text-align: center;
+            min-height: calc(100vh - 100px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero h1 {
+            font-size: 46px;
+            line-height: 1.05;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero h1 span.white {
+            color: var(--white-main);
+            display: block;
+        }
+
+        .hero h1 span.red {
+            color: var(--red-main);
+            text-shadow: 0 0 15px rgba(193, 18, 31, 0.4);
+            display: block;
+        }
+
+        .hero .subheadline {
+            font-size: 15px;
+            color: var(--white-sec);
+            max-width: 320px;
+            margin: 0 auto 36px auto;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+        }
+
+        /* PRICE TAG & BADGE */
+        .price-container {
+            background: rgba(138, 16, 24, 0.1);
+            border: 1px solid rgba(193, 18, 31, 0.2);
+            padding: 14px;
+            border-radius: 8px;
+            display: inline-block;
+            margin: 0 auto 24px auto;
+            position: relative;
+        }
+
+        .badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: var(--red-main);
+            color: var(--white-main);
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .price-old {
+            font-size: 12px;
+            text-decoration: line-through;
+            color: #777;
+            margin-right: 8px;
+        }
+
+        .price-new {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--white-main);
+        }
+
+        /* BUTTONS */
+        .btn {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, var(--red-main) 0%, var(--red-dusk) 100%);
+            color: var(--white-main);
+            font-family: var(--font-body);
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 18px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(193, 18, 31, 0.4);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+            animation: btnPulse 3s infinite;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+            opacity: 0.95;
+        }
+
+        /* TIMER */
+        .timer-container {
+            margin-top: 16px;
+            font-size: 12px;
+            color: #999;
+            letter-spacing: 0.5px;
+        }
+
+        .timer-digits {
+            font-family: monospace;
+            font-size: 15px;
+            color: var(--red-glow);
+            font-weight: bold;
+            margin-left: 4px;
+        }
+
+        /* MINI BLOC TRANSMISSION */
+        .transformation {
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .transformation p {
+            font-size: 15px;
+            margin-bottom: 16px;
+        }
+        
+        .transformation p strong {
+            color: var(--white-main);
+            font-weight: 500;
+        }
+
+        /* AUTHORITY FILTER - PARA QUEM É / NÃO É */
+        .authority-filter {
+            padding: 20px 0 40px 0;
+        }
+
+        .filter-box {
+            background: rgba(10, 10, 10, 0.6);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .filter-box.positive {
+            border-left: 3px solid var(--white-sec);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-right: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .filter-box.negative {
+            border-left: 3px solid var(--red-dusk);
+            border-top: 1px solid rgba(193, 18, 31, 0.1);
+            border-right: 1px solid rgba(193, 18, 31, 0.1);
+            border-bottom: 1px solid rgba(193, 18, 31, 0.1);
+        }
+
+        .filter-title {
+            font-family: var(--font-heading);
+            font-size: 18px;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-box.positive .filter-title {
+            color: var(--white-main);
+        }
+
+        .filter-box.negative .filter-title {
+            color: #a5a5a5;
+        }
+
+        .filter-list {
+            list-style: none;
+        }
+
+        .filter-list li {
+            font-size: 13px;
+            color: var(--white-sec);
+            margin-bottom: 10px;
+            padding-left: 24px;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .filter-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        .filter-box.positive .filter-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--white-main);
+            font-weight: bold;
+        }
+
+        .filter-box.negative .filter-list li::before {
+            content: "✕";
+            position: absolute;
+            left: 0;
+            color: var(--red-dusk);
+            font-weight: bold;
+        }
+
+        /* CARDS SECTION */
+        .features {
+            padding: 40px 0;
+        }
+
+        .section-title {
+            font-size: 22px;
+            margin-bottom: 24px;
+            text-align: center;
+            color: var(--white-main);
+            letter-spacing: 0.5px;
+        }
+
+        .grid {
+            display: block;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-glow);
+            padding: 22px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: border-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(230, 57, 70, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .card-icon {
+            font-size: 18px;
+        }
+
+        .card h3 {
+            font-size: 16px;
+            color: var(--white-main);
+            font-family: var(--font-body);
+            font-weight: 600;
+            letter-spacing: 0;
+        }
+
+        .card p {
+            font-size: 14px;
+            color: var(--white-sec);
+            margin-bottom: 12px;
+        }
+
+        .card-insight {
+            font-size: 12px;
+            color: #999;
+            font-style: italic;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 10px;
+            line-height: 1.5;
+        }
+
+        /* TESTIMONIALS */
+        .testimonials {
+            padding: 40px 0;
+        }
+
+        .testimonial-item {
+            background: rgba(15, 15, 15, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #222;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--red-glow);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .user-meta span {
+            display: block;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--white-main);
+        }
+
+        .user-age {
+            font-size: 11px;
+            color: #777;
+        }
+
+        .testimonial-item p {
+            font-size: 13px;
+            color: var(--white-sec);
+            font-style: normal;
+        }
+
+        /* INTERMEDIATE CTA */
+        .offer-box {
+            background: linear-gradient(180deg, rgba(20, 20, 20, 0.9) 0%, rgba(10, 10, 10, 0.95) 100%);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            margin: 40px 0;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .offer-box h3 {
+            font-size: 18px;
+            margin-bottom: 18px;
+            color: var(--white-main);
+            letter-spacing: 0.5px;
+        }
+
+        .features-list {
+            list-style: none;
+            text-align: left;
+            max-width: 220px;
+            margin: 0 auto 24px auto;
+        }
+
+        .features-list li {
+            font-size: 13px;
+            color: var(--white-sec);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .features-list li::before {
+            content: "✓";
+            color: var(--red-glow);
+            font-weight: bold;
+        }
+
+        .offer-box .price-container {
+            background: transparent;
+            border: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        /* FAQ ACCORDION */
+        .faq {
+            padding: 40px 0 60px 0;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 14px 0;
+        }
+
+        .faq-trigger {
+            width: 100%;
+            background: none;
+            border: none;
+            color: var(--white-main);
+            text-align: left;
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-icon {
+            font-size: 12px;
+            color: var(--red-glow);
+            transition: transform 0.3s ease;
+        }
+
+        .faq-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, margin 0.3s ease;
+        }
+
+        .faq-content p {
+            padding-top: 10px;
+            font-size: 13px;
+            color: #aaa;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-item.active .faq-content {
+            max-height: 100px;
+        }
+
+        /* STICKY FOOTER CTA */
+        .sticky-cta {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(5, 5, 5, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 12px 24px;
+            z-index: 100;
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+        }
+
+        .sticky-cta.visible {
+            transform: translateY(0);
+        }
+
+        .sticky-container {
+            max-width: 402px;
+            margin: 0 auto;
+        }
+
+        .sticky-container .btn {
+            padding: 14px 20px;
+            font-size: 14px;
+        }
+
+        /* DESKTOP OPTIMIZATION */
+        @media (min-width: 481px) {
+            .wrapper {
+                max-width: 480px;
+            }
+            .sticky-cta {
+                left: 50%;
+                transform: translate(-50%, 100%);
+                max-width: 480px;
+                border-left: 1px solid rgba(255, 255, 255, 0.03);
+                border-right: 1px solid rgba(255, 255, 255, 0.03);
+                border-radius: 12px 12px 0 0;
+            }
+            .sticky-cta.visible {
+                transform: translate(-50%, 0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient Dynamic Background -->
+    <div class="ambient-bg">
+        <div class="ambient-glow"></div>
+    </div>
+    <div class="cinematic-grain"></div>
+
+    <div class="wrapper">
+        
+        <!-- HERO SECTION -->
+        <section class="hero">
+            <h1>
+                <span class="white">Código</span>
+                <span class="red">da Atração</span>
+            </h1>
+            <p class="subheadline">Entenda a atração. Leia os sinais. Conquiste com confiança.</p>
+            
+            <div>
+                <div class="price-container">
+                    <span class="badge">41% OFF</span>
+                    <span class="price-old">R$24,90</span>
+                    <span class="price-new">R$14,70</span>
+                </div>
+            </div>
+
+            <a href="https://pay.kiwify.com.br/YOUR_LINK_HERE" class="btn">Liberar meu acesso por R$14,70</a>
+            
+            <div class="timer-container">
+                Oferta expira em: <span class="timer-digits" id="timer">02:14:39</span>
+            </div>
+        </section>
+
+        <!-- TRANSFORMATION BLOCK -->
+        <section class="transformation scroll-reveal">
+            <p>Você não precisa correr atrás.</p>
+            <p>Você precisa entender o que <strong>realmente gera atração</strong>.</p>
+            <p>Aprenda a perceber sinais, evitar erros que afastam e conduzir conexões com segurança — sem parecer forçado.</p>
+        </section>
+
+        <!-- AUTHORITY FILTER SECTION -->
+        <section class="authority-filter scroll-reveal">
+            <div class="filter-box positive">
+                <h3 class="filter-title">Para quem é:</h3>
+                <ul class="filter-list">
+                    <li>Homens que buscam evoluir sua presença e entender dinâmicas sociais reais.</li>
+                    <li>Para quem deseja construir conexões autênticas baseadas em confiança.</li>
+                    <li>Quem quer aprender a calibrar atitudes e ler o ambiente de forma silenciosa e poderosa.</li>
+                </ul>
+            </div>
+
+            <div class="filter-box negative">
+                <h3 class="filter-title">Para quem NÃO é:</h3>
+                <ul class="filter-list">
+                    <li>Quem procura "hacks" de sedução forçados ou métodos milagrosos.</li>
+                    <li>Homens que querem apenas decorar frases prontas e agir de forma artificial.</li>
+                    <li>Para quem não está disposto a mudar a própria postura e mentalidade.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- WHAT YOU WILL FIND -->
+        <section class="features scroll-reveal">
+            <h2 class="section-title">O que você vai encontrar</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">🧠</span>
+                        <h3>Mentalidade Masculina</h3>
+                    </div>
+                    <p>Como eliminar atitudes que fazem ela perder o interesse.</p>
+                    <div class="card-insight">O erro sutil que 90% dos homens cometem ao demonstrar intenção e como evitá-lo.</div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">👁️</span>
+                        <h3>Leitura de Sinais</h3>
+                    </div>
+                    <p>Como perceber interesse real antes de insistir.</p>
+                    <div class="card-insight">Aprenda a decifrar a linguagem corporal, olhares e o tom das mensagens.</div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">💬</span>
+                        <h3>Conversas que Conectam</h3>
+                    </div>
+                    <p>Como manter conversa natural, leve e envolvente.</p>
+                    <div class="card-insight">O roteiro invisível para nunca mais deixar o assunto morrer ou parecer forçado.</div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">🍷</span>
+                        <h3>Encontros de Sucesso</h3>
+                    </div>
+                    <p>Como conduzir o primeiro encontro com confiança.</p>
+                    <div class="card-insight">Da escolha estratégica do lugar à quebra da barreira física de forma natural.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TESTIMONIALS -->
+        <section class="testimonials scroll-reveal">
+            <h2 class="section-title">Resultados Reais</h2>
+            
+            <div class="testimonial-item">
+                <div class="user-info">
+                    <div class="avatar">R</div>
+                    <div class="user-meta">
+                        <span class="user-name">Rafael</span>
+                        <span class="user-age">26 anos</span>
+                    </div>
+                </div>
+                <p>“Eu percebi que meu erro era demonstrar demais logo no início. Só ajustar isso já mudou completamente minhas conversas.”</p>
+            </div>
+
+            <div class="testimonial-item">
+                <div class="user-info">
+                    <div class="avatar">L</div>
+                    <div class="user-meta">
+                        <span class="user-name">Lucas</span>
+                        <span class="user-age">31 anos</span>
+                    </div>
+                </div>
+                <p>“O conteúdo é direto. Sem enrolação. Terminei rápido e comecei a aplicar no mesmo dia.”</p>
+            </div>
+
+            <div class="testimonial-item">
+                <div class="user-info">
+                    <div class="avatar">D</div>
+                    <div class="user-meta">
+                        <span class="user-name">Daniel</span>
+                        <span class="user-age">24 anos</span>
+                    </div>
+                </div>
+                <p>“A parte de leitura de sinais me ajudou mais do que eu imaginava. Parei de insistir onde não fazia sentido.”</p>
+            </div>
+
+            <div class="testimonial-item">
+                <div class="user-info">
+                    <div class="avatar">H</div>
+                    <div class="user-meta">
+                        <span class="user-name">Henrique</span>
+                        <span class="user-age">29 anos</span>
+                    </div>
+                </div>
+                <p>“O primeiro encontro que tive depois de assistir foi absurdamente melhor. Me senti muito mais seguro.”</p>
+            </div>
+
+            <div class="testimonial-item">
+                <div class="user-info">
+                    <div class="avatar">C</div>
+                    <div class="user-meta">
+                        <span class="user-name">Caio</span>
+                        <span class="user-age">27 anos</span>
+                    </div>
+                </div>
+                <p>“O melhor foi que não parece aqueles cursos forçados de sedução. É muito mais sobre postura e percepção.”</p>
+            </div>
+
+            <div class="testimonial-item">
+                <div class="user-info">
+                    <div class="avatar">B</div>
+                    <div class="user-meta">
+                        <span class="user-name">Bruno</span>
+                        <span class="user-age">33 anos</span>
+                    </div>
+                </div>
+                <p>“Gostei porque é objetivo. Sem papo exagerado. Só o que realmente importa.”</p>
+            </div>
+        </section>
+
+        <!-- INTERMEDIATE CTA -->
+        <section class="offer-box scroll-reveal">
+            <h3>Acesso Imediato</h3>
+            <ul class="features-list">
+                <li>Conteúdo completo</li>
+                <li>Acesso liberado na hora</li>
+                <li>Assista pelo celular</li>
+                <li>Pagamento único</li>
+            </ul>
+            <div class="price-container">
+                <span class="price-new">R$14,70</span>
+            </div>
+            <a href="https://pay.kiwify.com.br/YOUR_LINK_HERE" class="btn">Quero meu acesso agora</a>
+        </section>
+
+        <!-- FAQ SECTION -->
+        <section class="faq scroll-reveal">
+            <h2 class="section-title">Perguntas Frequentes</h2>
+            
+            <div class="faq-item">
+                <button class="faq-trigger" onclick="toggleFaq(this)">
+                    <span>É ebook ou vídeo?</span>
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-content">
+                    <p>Conteúdo digital organizado em módulos acessíveis online.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-trigger" onclick="toggleFaq(this)">
+                    <span>Recebo acesso imediatamente?</span>
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-content">
+                    <p>Sim. Após a confirmação do pagamento você recebe os dados em seu e-mail.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-trigger" onclick="toggleFaq(this)">
+                    <span>Posso acessar pelo celular?</span>
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-content">
+                    <p>Sim. O material é inteiramente responsivo e ideal para visualização mobile.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-trigger" onclick="toggleFaq(this)">
+                    <span>Quanto tempo tenho acesso?</span>
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-content">
+                    <p>Seu acesso é vitalício e imediato após a aprovação da compra.</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- STICKY FOOTER CTA -->
+    <div class="sticky-cta" id="stickyCta">
+        <div class="sticky-container">
+            <a href="https://pay.kiwify.com.br/YOUR_LINK_HERE" class="btn">Liberar acesso • R$14,70</a>
+        </div>
+    </div>
+
+    <script>
+        // COUNTDOWN TIMER SYSTEM (LocalStorage Persistent)
+        function initCountdown() {
+            const timerElement = document.getElementById('timer');
+            const storageKey = 'codigo_da_atracao_timer';
+            const duration = 2 * 60 * 60 * 1000 + 14 * 60 * 1000 + 39 * 1000; // 02:14:39
+
+            let targetTime = localStorage.getItem(storageKey);
+
+            if (!targetTime) {
+                targetTime = new Date().getTime() + duration;
+                localStorage.setItem(storageKey, targetTime);
+            } else {
+                targetTime = parseInt(targetTime, 10);
+                // If stored time is in the past, restart countdown
+                if (new Date().getTime() > targetTime) {
+                    targetTime = new Date().getTime() + duration;
+                    localStorage.setItem(storageKey, targetTime);
+                }
+            }
+
+            function updateTimer() {
+                const now = new Date().getTime();
+                let diff = targetTime - now;
+
+                if (diff <= 0) {
+                    // Reset automatically when finished
+                    targetTime = new Date().getTime() + duration;
+                    localStorage.setItem(storageKey, targetTime);
+                    diff = duration;
+                }
+
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                const format = (num) => String(num).padStart(2, '0');
+                timerElement.textContent = `${format(hours)}:${format(minutes)}:${format(seconds)}`;
+            }
+
+            updateTimer();
+            setInterval(updateTimer, 1000);
+        }
+
+        // FAQ ACCORDION INTERACTION
+        function toggleFaq(button) {
+            const item = button.parentElement;
+            item.classList.toggle('active');
+        }
+
+        // SCROLL REVEAL MANAGER
+        const revealElements = document.querySelectorAll('.scroll-reveal');
+        const revealOnScroll = () => {
+            for (let i = 0; i < revealElements.length; i++) {
+                const windowHeight = window.innerHeight;
+                const elementTop = revealElements[i].getBoundingClientRect().top;
+                const elementVisible = 100;
+
+                if (elementTop < windowHeight - elementVisible) {
+                    revealElements[i].classList.add('active');
+                }
+            }
+        };
+
+        // STICKY FOOTER CTA VISIBILITY
+        const stickyCta = document.getElementById('stickyCta');
+        const handleStickyVisibility = () => {
+            // Show sticky CTA after scrolling down 300px
+            if (window.scrollY > 300) {
+                stickyCta.classList.add('visible');
+            } else {
+                stickyCta.classList.remove('visible');
+            }
+        };
+
+        // INITIALIZE
+        window.addEventListener('scroll', () => {
+            revealOnScroll();
+            handleStickyVisibility();
+        });
+        
+        window.addEventListener('load', () => {
+            initCountdown();
+            revealOnScroll(); // Trigger initial check
+        });
+    </script>
+</body>
+</html>
